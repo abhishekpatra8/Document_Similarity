@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" type= "text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" >
+    <title>Welcome to Document Matcher Page</title>
+</head>
+<body>
+    <h1>WELCOME  TO  DOCUMENT  SIMILARITY  CHECK</h1><br>
+    <div style="text-align: center;">
+        <textarea name = "doc1" placeholder="Enter the first document...."></textarea>
+        <textarea name = "doc2" placeholder="Enter the second document...."></textarea>
+        <p><button id="check" class="check">Submit</button></p>
+    </div>
+    <script>
+        $("#check").click(function(){
+            var doc1 = document.getElementsByName('doc1')[0].value
+            var doc2 = document.getElementsByName('doc2')[0].value
+            if(doc1 == "") { alert("Empty feild for 1st Document !!") }
+            else if(doc2 == "") { alert("Empty feild for 2nd Document !!") }
+            else
+            {
+                $.ajax({
+                    url: 'http://localhost:81/',
+                    dataType: 'json',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({'doc1': doc1, 'doc2': doc2}),
+                    success: function( resData, textStatus, jQxhr )
+                    {
+                        console.log(resData, textStatus);
+                        if(resData['success'] === 1)
+                        {
+                            alert(resData['result1']);
+                            document.getElementById("display").innerHTML = resData['result1'];
+<!--                            alert("Process done successfully !!");-->
+<!--                                window.location.reload(true);-->
+                        }
+                        else{alert("Failed to sent message !!");}
+                    },
+                    error: function( jqXhr, textStatus, errorThrown ){
+                        console.log( errorThrown );
+                    }
+                });
+            }
+        });
+    </script>
+<!--    {% if display == 1 %}-->
+        <div id="display">
+<!--            <table class="txt1">-->
+<!--                <tr>-->
+<!--                    <th>Document 1</th>-->
+<!--                    <th>Document 2</th>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--            <table>-->
+<!--                <tr>-->
+<!--                    <p class="doc1">{{ result['doc1'] }}</p>-->
+<!--                    <p class="doc2">{{ result['doc2'] }}</p>-->
+<!--                </tr>-->
+<!--            </table>-->
+        </div>
+
+<!--        <div>-->
+<!--            <table class="txt2">-->
+<!--                <tr>-->
+<!--                    <th>With Stop Words</th>-->
+<!--                    <th>Without Stop Words</th>-->
+<!--                    <th>Sequence Matcher</th>-->
+<!--                    <th>Fuzzy Wuzzy Set Ratio</th>-->
+<!--                    <th>Fuzzy Wuzzy Sort Ratio</th>-->
+<!--                    <th>Words from first document</th>-->
+<!--                    <th>Words from second document</th>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    {% for i in output %}-->
+<!--                        <td style="color: #29daec; font-size: 20px;"> {{ i }} </td>-->
+<!--                    {% endfor %}-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--        </div>-->
+<!--        <div class="result">-->
+<!--            <h3>Result</h3>-->
+<!--            {% if accuracy == 0 %}-->
+<!--                <p style="color:yellow;">Partial Match Found</p>-->
+<!--            {% elif accuracy == 1 %}-->
+<!--                <p style="color:red;">Full Match Found</p>-->
+<!--            {% else %}-->
+<!--                <p style="color:#65c765;">No Match Found</p>-->
+<!--            {% endif %}-->
+<!--        </div>-->
+<!--    {% endif %}-->
+</body>
+</html>
